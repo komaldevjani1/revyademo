@@ -4,13 +4,21 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { GoogleConnectModal } from "@/components/google-connect-modal"
-import { useIntegrations } from "@/context/integration-context"
 import Image from "next/image"
 import { CheckCircle2, XCircle } from "lucide-react"
 
 export default function IntegrationsPage() {
   const [isModalOpen, setModalOpen] = useState(false)
-  const { isGoogleSheetsConnected, disconnectGoogleSheets } = useIntegrations()
+  const [isGoogleSheetsConnected, setIsGoogleSheetsConnected] = useState(false)
+
+  const connectGoogleSheets = () => {
+    setIsGoogleSheetsConnected(true)
+    setModalOpen(false)
+  }
+
+  const disconnectGoogleSheets = () => {
+    setIsGoogleSheetsConnected(false)
+  }
 
   return (
     <div className="flex flex-col w-full">
@@ -59,7 +67,7 @@ export default function IntegrationsPage() {
           </CardContent>
         </Card>
       </main>
-      <GoogleConnectModal isOpen={isModalOpen} onOpenChange={setModalOpen} />
+      <GoogleConnectModal isOpen={isModalOpen} onOpenChange={setModalOpen} onConnect={connectGoogleSheets} />
     </div>
   )
 }

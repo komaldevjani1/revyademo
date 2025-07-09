@@ -9,19 +9,17 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog"
-import { useIntegrations } from "@/context/integration-context"
 import Image from "next/image"
 
 interface GoogleConnectModalProps {
   isOpen: boolean
   onOpenChange: (isOpen: boolean) => void
+  onConnect: () => void
 }
 
-export function GoogleConnectModal({ isOpen, onOpenChange }: GoogleConnectModalProps) {
-  const { connectGoogleSheets } = useIntegrations()
-
+export function GoogleConnectModal({ isOpen, onOpenChange, onConnect }: GoogleConnectModalProps) {
   const handleAllow = () => {
-    connectGoogleSheets()
+    onConnect()
     onOpenChange(false)
   }
 
