@@ -4,6 +4,7 @@ import type React from "react"
 import { useState } from "react"
 import { UploadCsvModal } from "@/components/upload-csv-modal"
 import { useIntegrations } from "@/context/integration-context"
+import { DeductionDetailModal } from "@/components/deduction-detail-modal"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
@@ -59,6 +60,8 @@ const disputes = [
 export function DashboardPage() {
   const [isUploadModalOpen, setUploadModalOpen] = useState(false)
   const { isGoogleSheetsConnected } = useIntegrations()
+  const [selectedDeduction, setSelectedDeduction] = useState<any>(null)
+  const [isDeductionModalOpen, setDeductionModalOpen] = useState(false)
 
   const integrations = [
     { name: "Gmail", status: "success" },
@@ -197,7 +200,14 @@ export function DashboardPage() {
             <CardContent>
               <div className="space-y-6">
                 {disputes.map((dispute, index) => (
-                  <div key={index} className="flex items-start gap-4">
+                  <button
+                    key={dispute.id}
+                    className="flex items-start gap-4 w-full text-left p-2 rounded hover:bg-gray-800/30"
+                    onClick={() => {
+                      // Handle dispute click
+                      console.log("Dispute clicked:", dispute.id)
+                    }}
+                  >
                     <div className="flex-shrink-0 mt-1">
                       {dispute.status === "Resolved" && <CheckCircle2 className="h-5 w-5 text-green-400" />}
                       {dispute.status === "In Progress" && <AlertTriangle className="h-5 w-5 text-yellow-400" />}
@@ -209,7 +219,7 @@ export function DashboardPage() {
                         {dispute.id} - {dispute.time}
                       </p>
                     </div>
-                  </div>
+                  </button>
                 ))}
               </div>
             </CardContent>
@@ -235,7 +245,14 @@ export function DashboardPage() {
                 </TableHeader>
                 <TableBody>
                   {deductionsData.map((deduction) => (
-                    <TableRow key={deduction.id} className="border-gray-800 hover:bg-gray-800/50">
+                    <TableRow
+                      key={deduction.id}
+                      className="border-gray-800 hover:bg-gray-800/50 cursor-pointer"
+                      onClick={() => {
+                        setSelectedDeduction(deduction)
+                        setDeductionModalOpen(true)
+                      }}
+                    >
                       <TableCell className="font-medium">{deduction.id}</TableCell>
                       <TableCell>${deduction.amount.toFixed(2)}</TableCell>
                       <TableCell>
@@ -302,6 +319,11 @@ export function DashboardPage() {
         </div>
       </main>
       <UploadCsvModal isOpen={isUploadModalOpen} onOpenChange={setUploadModalOpen} />
+      <DeductionDetailModal
+        isOpen={isDeductionModalOpen}
+        onOpenChange={setDeductionModalOpen}
+        deduction={selectedDeduction}
+      />
     </div>
   )
 }

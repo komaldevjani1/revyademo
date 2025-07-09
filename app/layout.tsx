@@ -1,20 +1,21 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Poppins } from "next/font/google"
+import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
-import { IntegrationProvider } from "@/context/integration-context"
+import { TooltipProvider } from "@/components/ui/tooltip"
 
-const poppins = Poppins({
+const inter = Inter({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  variable: "--font-inter",
+  display: "swap",
 })
 
 export const metadata: Metadata = {
-  title: "Revenue Operations Dashboard",
-  description: "Modern SaaS dashboard for revenue operations.",
+  title: "Revya.ai - Revenue Recovery Dashboard",
+  description: "Automated distributor deduction recovery for CPG brands",
     generator: 'v0.dev'
 }
 
@@ -25,16 +26,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={poppins.className}>
+      <body className={`${inter.variable} font-sans`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
-          <IntegrationProvider>
+          <TooltipProvider>
             <SidebarProvider>
               <div className="flex min-h-screen w-full bg-gray-950 text-gray-50">
                 <AppSidebar />
                 <main className="flex-1">{children}</main>
               </div>
             </SidebarProvider>
-          </IntegrationProvider>
+          </TooltipProvider>
         </ThemeProvider>
       </body>
     </html>
