@@ -1,33 +1,21 @@
 "use client"
 
-import { useState } from "react"
-import { RevyaDashboard } from "@/components/revya-dashboard"
-import { LoginPage } from "@/components/login-page"
-import { IntegrationProvider } from "@/context/integration-context"
-import { SidebarProvider } from "@/components/ui/sidebar"
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
+import { RevyaDashboard } from "@/components/revya-dashboard"
+import { IntegrationProvider } from "@/context/integration-context"
 import { TooltipProvider } from "@/components/ui/tooltip"
 
-export default function Home() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-
-  const handleLogin = () => {
-    setIsLoggedIn(true)
-  }
-
-  if (!isLoggedIn) {
-    return <LoginPage onLogin={handleLogin} />
-  }
-
+export default function DashboardPage() {
   return (
     <TooltipProvider>
       <IntegrationProvider>
         <SidebarProvider>
           <div className="flex min-h-screen w-full bg-gray-950 text-gray-50">
             <AppSidebar />
-            <main className="flex-1">
+            <SidebarInset className="flex-1">
               <RevyaDashboard />
-            </main>
+            </SidebarInset>
           </div>
         </SidebarProvider>
       </IntegrationProvider>

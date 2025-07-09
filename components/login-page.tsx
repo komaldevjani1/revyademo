@@ -22,23 +22,25 @@ export function LoginPage({ onLogin }: LoginPageProps) {
     e.preventDefault()
     setIsLoading(true)
 
-    // Simulate login delay
+    // Check for demo login
+    if (email === "jane@revya.ai" || email === "demo@revya.ai") {
+      // Simulate login delay for demo
+      await new Promise((resolve) => setTimeout(resolve, 1500))
+      setIsLoading(false)
+      onLogin()
+      return
+    }
+
+    // Simulate login delay for other emails
     await new Promise((resolve) => setTimeout(resolve, 1500))
 
     setIsLoading(false)
     onLogin()
   }
 
-  const handleDemoLogin = async () => {
+  const handleDemoEmailClick = () => {
     setEmail("jane@revya.ai")
     setPassword("demo123")
-    setIsLoading(true)
-
-    // Simulate login delay
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-
-    setIsLoading(false)
-    onLogin()
   }
 
   return (
@@ -81,19 +83,6 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                 />
               </svg>
               Sign in with Google
-            </Button>
-
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full border-gray-600 text-gray-300 hover:bg-gray-800 bg-gray-800 h-12"
-              onClick={handleDemoLogin}
-              disabled={isLoading}
-            >
-              <div className="w-5 h-5 mr-3 bg-purple-600 rounded flex items-center justify-center">
-                <span className="text-white text-xs font-bold">D</span>
-              </div>
-              {isLoading ? "Loading demo..." : "Demo"}
             </Button>
 
             {/* Divider */}
