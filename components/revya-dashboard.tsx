@@ -252,7 +252,7 @@ export function RevyaDashboard() {
             <div className="grid gap-6 md:grid-cols-3">
               <MetricCard
                 title="Revenue Recovered"
-                value="$2.34M"
+                value="$1.34M"
                 change="+24.8%"
                 changeType="increase"
                 description="Last 12 months"
