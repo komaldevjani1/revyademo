@@ -19,6 +19,7 @@ import {
   Building,
   Hash,
   ExternalLink,
+  AlertCircle,
 } from "lucide-react"
 
 interface DeductionDrawerProps {
@@ -148,6 +149,9 @@ export function DeductionDrawer({ isOpen, onClose, deduction }: DeductionDrawerP
 
   const details = getDeductionDetails()
 
+  const hasMissingInfo = details.documents.some((doc) => doc.status === "missing")
+  const missingDocCount = details.documents.filter((doc) => doc.status === "missing").length
+
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent className="w-full sm:max-w-2xl bg-gray-900 border-gray-800 text-gray-50 overflow-y-auto">
@@ -169,6 +173,12 @@ export function DeductionDrawer({ isOpen, onClose, deduction }: DeductionDrawerP
                 {deduction.status === "Needs Review" && <XCircle className="mr-1 h-3 w-3" />}
                 {deduction.status}
               </Badge>
+              {hasMissingInfo && (
+                <Badge className="text-orange-400 bg-orange-400/10 border-orange-400/20">
+                  <AlertCircle className="mr-1 h-3 w-3" />
+                  {missingDocCount} Missing
+                </Badge>
+              )}
             </SheetTitle>
             <div className="text-right">
               <div className="text-2xl font-bold">${deduction.amount.toLocaleString()}</div>
@@ -183,7 +193,10 @@ export function DeductionDrawer({ isOpen, onClose, deduction }: DeductionDrawerP
         <Tabs defaultValue="overview" className="w-full">
           <TabsList className="grid w-full grid-cols-4 bg-gray-800">
             <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="documents">Documents</TabsTrigger>
+            <TabsTrigger value="documents">
+              Documents
+              {hasMissingInfo && <span className="ml-1 inline-flex h-2 w-2 rounded-full bg-orange-400" />}
+            </TabsTrigger>
             <TabsTrigger value="communications">Communications</TabsTrigger>
             <TabsTrigger value="timeline">Timeline</TabsTrigger>
           </TabsList>
@@ -223,6 +236,19 @@ export function DeductionDrawer({ isOpen, onClose, deduction }: DeductionDrawerP
 
             <Separator className="bg-gray-800" />
 
+            {hasMissingInfo && (
+              <div className="bg-orange-900/20 border border-orange-800/30 p-4 rounded-lg flex items-start gap-3">
+                <AlertCircle className="h-5 w-5 text-orange-400 mt-0.5 flex-shrink-0" />
+                <div>
+                  <h4 className="font-semibold text-orange-400 mb-1">Missing Information</h4>
+                  <p className="text-sm text-orange-300">
+                    {missingDocCount} required {missingDocCount === 1 ? "document is" : "documents are"} missing. Please
+                    upload or request the missing documentation to proceed with dispute.
+                  </p>
+                </div>
+              </div>
+            )}
+
             {/* Analysis */}
             <div className="space-y-4">
               <h3 className="font-semibold text-lg">AI Analysis</h3>
@@ -242,6 +268,15 @@ export function DeductionDrawer({ isOpen, onClose, deduction }: DeductionDrawerP
             {/* Action Buttons */}
             <div className="space-y-3">
               <h3 className="font-semibold text-lg">Actions</h3>
+
+              <Button
+                className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold"
+                disabled={hasMissingInfo}
+              >
+                <Flag className="h-4 w-4 mr-2" />
+                {hasMissingInfo ? "Complete Documentation to Dispute" : "Initiate Dispute"}
+              </Button>
+
               <div className="grid grid-cols-2 gap-3">
                 {deduction.status === "Needs Review" && (
                   <>
@@ -257,13 +292,13 @@ export function DeductionDrawer({ isOpen, onClose, deduction }: DeductionDrawerP
                 )}
                 {deduction.status === "Disputable" && (
                   <>
-                    <Button className="bg-purple-600 hover:bg-purple-700">
-                      <Flag className="h-4 w-4 mr-2" />
-                      Initiate Dispute
-                    </Button>
                     <Button variant="outline" className="border-gray-600 bg-transparent">
                       <Mail className="h-4 w-4 mr-2" />
                       Send Evidence
+                    </Button>
+                    <Button variant="outline" className="border-gray-600 bg-transparent">
+                      <Upload className="h-4 w-4 mr-2" />
+                      Upload Docs
                     </Button>
                   </>
                 )}
@@ -289,19 +324,31 @@ export function DeductionDrawer({ isOpen, onClose, deduction }: DeductionDrawerP
             <h3 className="font-semibold text-lg">Related Documents</h3>
             <div className="space-y-3">
               {details.documents.map((doc, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
+                <div
+                  key={index}
+                  className={`flex items-center justify-between p-3 rounded-lg ${
+                    doc.status === "missing" ? "bg-orange-900/20 border border-orange-800/30" : "bg-gray-800/50"
+                  }`}
+                >
                   <div className="flex items-center gap-3">
                     <FileText
                       className={`h-5 w-5 ${
                         doc.status === "available"
                           ? "text-green-400"
                           : doc.status === "missing"
-                            ? "text-red-400"
+                            ? "text-orange-400"
                             : "text-blue-400"
                       }`}
                     />
                     <div>
-                      <span className="font-medium">{doc.name}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">{doc.name}</span>
+                        {doc.status === "missing" && (
+                          <Badge className="text-xs text-orange-400 bg-orange-400/10 border-orange-400/20">
+                            Required
+                          </Badge>
+                        )}
+                      </div>
                       <div className="text-xs text-gray-400">
                         {doc.type} • {doc.status}
                       </div>
@@ -318,7 +365,7 @@ export function DeductionDrawer({ isOpen, onClose, deduction }: DeductionDrawerP
                         </Button>
                       </>
                     ) : (
-                      <Button size="sm" variant="outline" className="border-red-600 text-red-400 bg-transparent">
+                      <Button size="sm" variant="outline" className="border-orange-600 text-orange-400 bg-transparent">
                         <Upload className="h-4 w-4 mr-1" />
                         Request
                       </Button>

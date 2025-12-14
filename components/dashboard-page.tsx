@@ -21,6 +21,7 @@ import { Badge } from "@/components/ui/badge"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts"
 import { ChartTooltipContent, ChartContainer } from "@/components/ui/chart"
+import type { ChartConfig } from "@/components/ui/chart"
 import {
   Bell,
   CheckCircle2,
@@ -44,11 +45,51 @@ const chartData = [
 ]
 
 const deductionsData = [
-  { id: "DED-001", amount: 250.0, status: "Disputable", date: "2024-06-20" },
-  { id: "DED-002", amount: 150.0, status: "Valid", date: "2024-06-18" },
-  { id: "DED-003", amount: 350.0, status: "Needs Review", date: "2024-06-15" },
-  { id: "DED-004", amount: 450.0, status: "Valid", date: "2024-06-12" },
-  { id: "DED-005", amount: 550.0, status: "Disputable", date: "2024-06-10" },
+  {
+    id: "806803842",
+    reason: "Shortage",
+    retailer: "Target",
+    amount: 20947,
+    status: "Needs Review",
+    daysOutstanding: 42,
+    date: "2025-11-06",
+  },
+  {
+    id: "806224215",
+    reason: "Shortage",
+    retailer: "Target",
+    amount: 2089,
+    status: "Disputed",
+    daysOutstanding: 49,
+    date: "2024-10-29",
+  },
+  {
+    id: "794846216",
+    reason: "Substitution",
+    retailer: "Target",
+    amount: 41,
+    status: "Valid",
+    daysOutstanding: 208,
+    date: "2025-05-16",
+  },
+  {
+    id: "3377973",
+    reason: "Unknown",
+    retailer: "Walgreens",
+    amount: 975,
+    status: "Needs Review",
+    daysOutstanding: 79,
+    date: "2025-09-25",
+  },
+  {
+    id: "1000189844",
+    reason: "Delay",
+    retailer: "Ulta",
+    amount: 400,
+    status: "Disputed",
+    daysOutstanding: 36,
+    date: "2026-11-07",
+  },
 ]
 
 const disputes = [
@@ -56,6 +97,17 @@ const disputes = [
   { id: "DIS-088", status: "In Progress", update: "Email sent to distributor", time: "1d ago" },
   { id: "DIS-087", status: "New", update: "Deduction flagged for dispute", time: "3d ago" },
 ]
+
+const chartConfig: ChartConfig = {
+  recovered: {
+    label: "Recovered",
+    color: "#34d399",
+  },
+  pending: {
+    label: "Pending",
+    color: "#facc15",
+  },
+}
 
 export function DashboardPage() {
   const [isUploadModalOpen, setUploadModalOpen] = useState(false)
@@ -113,7 +165,7 @@ export function DashboardPage() {
 
       <main className="flex-1 p-6 md:p-8 space-y-8">
         <div className="text-center">
-          <p className="text-lg text-gray-400">Every dollar matters. We’re plugging your revenue leaks.</p>
+          <p className="text-lg text-gray-400">Every dollar matters. We're plugging your revenue leaks.</p>
         </div>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           <StatCard
@@ -157,7 +209,7 @@ export function DashboardPage() {
               <CardDescription>Recovered Revenue vs. Pending Deductions</CardDescription>
             </CardHeader>
             <CardContent>
-              <ChartContainer config={{}} className="h-[300px] w-full">
+              <ChartContainer config={chartConfig} className="h-[300px] w-full">
                 <ResponsiveContainer>
                   <LineChart data={chartData}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" />
@@ -176,16 +228,16 @@ export function DashboardPage() {
                     <Line
                       type="monotone"
                       dataKey="recovered"
-                      stroke="#34d399"
+                      stroke={chartConfig.recovered.color}
                       strokeWidth={2}
-                      dot={{ r: 4, fill: "#34d399" }}
+                      dot={{ r: 4, fill: chartConfig.recovered.color }}
                     />
                     <Line
                       type="monotone"
                       dataKey="pending"
-                      stroke="#facc15"
+                      stroke={chartConfig.pending.color}
                       strokeWidth={2}
-                      dot={{ r: 4, fill: "#facc15" }}
+                      dot={{ r: 4, fill: chartConfig.pending.color }}
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -227,7 +279,7 @@ export function DashboardPage() {
         </div>
 
         <div className="grid gap-6 lg:grid-cols-3">
-          <Card className="lg:col-span-2 bg-gray-900 border-gray-800">
+          <Card className="lg:col-span-3 bg-gray-900 border-gray-800">
             <CardHeader>
               <CardTitle>Deduction Management</CardTitle>
               <CardDescription>Deductions requiring your attention.</CardDescription>
@@ -237,8 +289,11 @@ export function DashboardPage() {
                 <TableHeader>
                   <TableRow className="border-gray-800 hover:bg-gray-800/50">
                     <TableHead>Deduction ID</TableHead>
-                    <TableHead>Amount</TableHead>
+                    <TableHead>Deduction Reason</TableHead>
+                    <TableHead>Retailer</TableHead>
+                    <TableHead className="text-right">Amount</TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead>Days Outstanding</TableHead>
                     <TableHead>Date</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
@@ -254,7 +309,9 @@ export function DashboardPage() {
                       }}
                     >
                       <TableCell className="font-medium">{deduction.id}</TableCell>
-                      <TableCell>${deduction.amount.toFixed(2)}</TableCell>
+                      <TableCell>{deduction.reason}</TableCell>
+                      <TableCell>{deduction.retailer}</TableCell>
+                      <TableCell className="text-right font-semibold">${deduction.amount}</TableCell>
                       <TableCell>
                         <Badge
                           variant={
@@ -271,49 +328,27 @@ export function DashboardPage() {
                           {deduction.status}
                         </Badge>
                       </TableCell>
+                      <TableCell>{deduction.daysOutstanding} days</TableCell>
                       <TableCell>{deduction.date}</TableCell>
                       <TableCell className="text-right">
-                        <Button variant="ghost" size="icon">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" onClick={(e) => e.stopPropagation()}>
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="bg-gray-900 border-gray-800 text-gray-50">
+                            <DropdownMenuItem>View Details</DropdownMenuItem>
+                            <DropdownMenuItem>Edit</DropdownMenuItem>
+                            <DropdownMenuSeparator className="bg-gray-800" />
+                            <DropdownMenuItem className="text-red-400">Delete</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
-            </CardContent>
-          </Card>
-          <Card className="bg-gray-900 border-gray-800">
-            <CardHeader>
-              <CardTitle>Data Ingestion Status</CardTitle>
-              <CardDescription>Real-time integration health.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {integrations.map((integration) => (
-                <div key={integration.name} className="flex items-center justify-between">
-                  <span className="flex items-center gap-2">
-                    {integration.status === "success" && <CheckCircle2 className="h-5 w-5 text-green-400" />}
-                    {integration.status === "warning" && <AlertTriangle className="h-5 w-5 text-yellow-400" />}
-                    {integration.status === "error" && <XCircle className="h-5 w-5 text-red-400" />}
-                    {integration.name}
-                  </span>
-                  <span
-                    className={`text-sm font-medium ${
-                      integration.status === "success"
-                        ? "text-green-400"
-                        : integration.status === "warning"
-                          ? "text-yellow-400"
-                          : "text-red-400"
-                    }`}
-                  >
-                    {integration.status === "success"
-                      ? "Connected"
-                      : integration.status === "warning"
-                        ? "Sync Delayed"
-                        : "Failed"}
-                  </span>
-                </div>
-              ))}
             </CardContent>
           </Card>
         </div>

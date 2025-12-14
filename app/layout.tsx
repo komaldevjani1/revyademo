@@ -13,7 +13,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Revya.ai - Revenue Recovery Dashboard",
   description: "Automated distributor deduction recovery for CPG brands",
-    generator: 'v0.dev'
+    generator: 'v0.app'
 }
 
 export default function RootLayout({
