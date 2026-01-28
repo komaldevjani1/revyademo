@@ -65,17 +65,17 @@ const deductionsData = [
   },
   {
     id: "794846216",
-    reason: "MCB",
-    retailer: "RNDC",
-    amount: 410,
+    reason: "Substitution",
+    retailer: "Target",
+    amount: 41,
     status: "Valid",
     daysOutstanding: 208,
     date: "2025-05-16",
   },
   {
     id: "3377973",
-    reason: "New Item Listing",
-    retailer: "Southern Glazer",
+    reason: "Unknown",
+    retailer: "Walgreens",
     amount: 975,
     status: "Needs Review",
     daysOutstanding: 79,
@@ -83,8 +83,8 @@ const deductionsData = [
   },
   {
     id: "1000189844",
-    reason: "Rebates",
-    retailer: "Southern Glazer",
+    reason: "Delay",
+    retailer: "Ulta",
     amount: 400,
     status: "Disputed",
     daysOutstanding: 36,
@@ -295,7 +295,7 @@ export function DashboardPage() {
                     <TableHead>Status</TableHead>
                     <TableHead>Days Outstanding</TableHead>
                     <TableHead>Date</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead className="text-right">GL Code</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
