@@ -22,17 +22,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar"
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts"
 import { ChartTooltipContent, ChartContainer } from "@/components/ui/chart"
 import type { ChartConfig } from "@/components/ui/chart"
-import {
-  Bell,
-  CheckCircle2,
-  AlertTriangle,
-  XCircle,
-  MoreHorizontal,
-  ArrowUpRight,
-  DollarSign,
-  FileText,
-  BarChart2,
-} from "lucide-react"
+import { Bell, CheckCircle2, AlertTriangle, XCircle, ArrowUpRight, DollarSign, FileText, BarChart2 } from "lucide-react"
 import Image from "next/image"
 
 const chartData = [
@@ -53,6 +43,7 @@ const deductionsData = [
     status: "Needs Review",
     daysOutstanding: 42,
     date: "2025-11-06",
+    glCode: "Invoice Discrepancy",
   },
   {
     id: "806224215",
@@ -62,33 +53,37 @@ const deductionsData = [
     status: "Disputed",
     daysOutstanding: 49,
     date: "2024-10-29",
+    glCode: "Invoice Discrepancy",
   },
   {
     id: "794846216",
-    reason: "MCB",
-    retailer: "RNDC",
-    amount: 410,
+    reason: "Substitution",
+    retailer: "Target",
+    amount: 41,
     status: "Valid",
     daysOutstanding: 208,
     date: "2025-05-16",
+    glCode: "Invoice Discrepancy",
   },
   {
     id: "3377973",
-    reason: "New Item Listing",
-    retailer: "Southern Glazer",
+    reason: "Unknown",
+    retailer: "Walgreens",
     amount: 975,
     status: "Needs Review",
     daysOutstanding: 79,
     date: "2025-09-25",
+    glCode: "Invoice Discrepancy",
   },
   {
     id: "1000189844",
-    reason: "Rebates",
-    retailer: "Southern Glazer",
+    reason: "Delay",
+    retailer: "Ulta",
     amount: 400,
     status: "Disputed",
     daysOutstanding: 36,
     date: "2026-11-07",
+    glCode: "Ops Fines",
   },
 ]
 
@@ -295,7 +290,7 @@ export function DashboardPage() {
                     <TableHead>Status</TableHead>
                     <TableHead>Days Outstanding</TableHead>
                     <TableHead>Date</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead className="text-right">GL Code</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -330,21 +325,7 @@ export function DashboardPage() {
                       </TableCell>
                       <TableCell>{deduction.daysOutstanding} days</TableCell>
                       <TableCell>{deduction.date}</TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" onClick={(e) => e.stopPropagation()}>
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="bg-gray-900 border-gray-800 text-gray-50">
-                            <DropdownMenuItem>View Details</DropdownMenuItem>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuSeparator className="bg-gray-800" />
-                            <DropdownMenuItem className="text-red-400">Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
+                      <TableCell className="text-right">{deduction.glCode}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

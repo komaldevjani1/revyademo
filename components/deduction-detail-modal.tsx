@@ -24,7 +24,7 @@ export function DeductionDetailModal({ isOpen, onOpenChange, deduction }: Deduct
       invoice: "CB-806803842",
       reasonCode: "Shortage",
       reason:
-        "Shortage quantities applied on the chargeback are incorrect across all item numbers. The total shortage charge applied was $20,947.16. After recalculating the shortage using the packing list quantities and extended unit costs across all item numbers, the verified extended cost of the actual shortage totals $14,020.62. As a result, the chargeback exceeds the supported shortage amount by $6,926.54. We are requesting repayment of the unsupported difference. Please see Dispute Detail to find full list of items incorrectly shortage",
+        "Shortage values applied on the chargeback are incorrect across all item numbers.The total shortage charge applied was $20,947.16. However, after recalculating the shortage using the packing list quantities and extended unit costs across all item numbers, the cost of the actual shortage totals $14,020.62. As a result, the chargeback exceeds the supported shortage amount by $6,926.54. We are requesting repayment of the unsupported difference. Please see Dispute Detail to find full list of items incorrectly shortage",
       documents: [
         { name: "Original Invoice", type: "PDF", status: "available", color: "blue" },
         { name: "Proof of Delivery", type: "PDF", status: "missing", color: "red" },
@@ -82,19 +82,19 @@ export function DeductionDetailModal({ isOpen, onOpenChange, deduction }: Deduct
       nextSteps: "Follow up until response.",
     }
 
-  // 3️⃣ RNDC — mcb
+  // 3️⃣ Target — Substitution
   } else if (deduction.id === "794846216") {
     return {
-      customer: "RNDC",
+      customer: "Target",
       invoice: "CB-794846216",
-      reasonCode: "MCB",
+      reasonCode: "Substitution",
       reason:
-        "Based on the available records, the MCB appears valid. Promo calendar states a 20% MCB from March 1 - March 15th 2025 which aligns with the total deducted.",
+        "Based on the available records, the substitution appears valid. The originally ordered item was not fulfilled as requested, and a substitute item was used to complete fulfillment in line with substitution policy/approval. The pricing adjustment is consistent with the documented cost difference. As a result, this substitution chargeback is supported by the available documentation and is unlikely to be recoverable.",
       documents: [
         { name: "Original Invoice", type: "PDF", status: "available", color: "blue" },
         { name: "Purchase Order (PO)", type: "PDF", status: "available", color: "green" },
-        { name: "Promo Calendar", type: "PDF", status: "available", color: "green" },
-        { name: "Promotion Contract", type: "CSV", status: "available", color: "green" },
+        { name: "Proof of Delivery", type: "PDF", status: "available", color: "green" },
+        { name: "Substitution Policy / Approval", type: "PDF", status: "available", color: "green" },
         { name: "Deduction Notice", type: "PDF", status: "available", color: "yellow" },
       ],
       communications: [
@@ -116,54 +116,56 @@ export function DeductionDetailModal({ isOpen, onOpenChange, deduction }: Deduct
       nextSteps: "",
     }
 
-  // 4️⃣ RNDC - New Item Listing Fee
+  // 4️⃣ Walgreens — Unknown
   } else if (deduction.id === "3377973") {
     return {
-      customer: "Southern Glazer Wine & Spirits",
+      customer: "Walgreens",
       invoice: "CB-3377973",
-      reasonCode: "New Item Listing Fee",
+      reasonCode: "Unknown",
       reason:
-        "New Item Listing Fee appears to be charged twice for the same DC and SKU",
+        "The chargeback document does not list a reason code or description. Without this information, we are unable to validate the deduction. Please provide full backup documentation so we can review and resolve.",
       documents: [
         { name: "Deduction Notice", type: "PDF", status: "available", color: "yellow" },
-        { name: "Contract", type: "PDF", status: "missing", color: "red" },
+        { name: "Original Invoice", type: "PDF", status: "missing", color: "red" },
         { name: "Purchase Order (PO)", type: "PDF", status: "missing", color: "red" },
+        { name: "Proof of Delivery", type: "PDF", status: "missing", color: "red" },
       ],
       communications: [
         {
           type: "sent",
-          subject: "3377973 | Potential Duplicate",
+          subject: "3377973 | Request for Backup",
           time: "1 day ago",
           content:
-            "It appears that we have been charged a listing fee twiced for the same DC and SKU, can you confirm if this is a dupe or something else?",
+            "Please provide the reason code and supporting documentation (PO, invoice, POD, calculation) so we can review this deduction.",
         },
       ],
       nextSteps: "Await documentation to determine dispute validity.",
     }
 
-  // 5️⃣ Rebates
+  // 5️⃣ Ulta — Delay
   } else if (deduction.id === "1000189844") {
     return {
-      customer: "Southern Glazer Wine & Spirits",
+      customer: "Ulta",
       invoice: "CB-1000189844",
-      reasonCode: "Rebate",
+      reasonCode: "Delay",
       reason:
-        "Based on deduction value for this PO, distributor was supposed to cover 50% of Rebate, but 0% was covered",
+        "Based on POD and carrier timestamps, the shipment was delivered within the required delivery window and accepted without exception. No qualifying delay event is supported by the records, indicating the chargeback was applied in error.",
       documents: [
         { name: "Original Invoice", type: "PDF", status: "available", color: "blue" },
-        { name: "Deduction", type: "PDF", status: "available", color: "green" },
+        { name: "Proof of Delivery", type: "PDF", status: "available", color: "green" },
+        { name: "Carrier Tracking", type: "PDF", status: "available", color: "green" },
         { name: "Purchase Order (PO)", type: "PDF", status: "available", color: "green" },
       ],
       communications: [
         {
           type: "sent",
-          subject: "1000189844 | Rebate Coverage Dispute",
+          subject: "1000189844 | Delay Dispute",
           time: "3 days ago",
           content:
-            "According to our agreement, we're supposed to cover 50% of the Rebate but according to this PO, it looks like we covered all of it. Can we get a repayment for the 50%?",
+            "Per POD and carrier tracking, delivery occurred on time. Attached documentation supports dispute of the delay chargeback.",
         },
       ],
-      nextSteps: "Await response from distributor.",
+      nextSteps: "Submit dispute with POD and carrier tracking.",
     }
   }
 }
