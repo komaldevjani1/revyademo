@@ -1,26 +1,3 @@
-import { useState, useEffect } from 'react';
-import Spinner from '@/components/ui/spinner'; // or your existing spinner component
-
-export default function Page() {
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    setTimeout(() => setLoading(false), 500); // quick simulated loading
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="fixed inset-0 bg-white flex items-center justify-center z-50">
-        <Spinner />
-      </div>
-    );
-  }
-
-  return (
-    <div>
-      {/* existing page content here */
-
-
 "use client"
 
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
@@ -95,8 +72,8 @@ export default function WorkflowsPage() {
                 <div className="mb-8">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h1 className="text-3xl font-bold mb-2">Workflows</h1>
-                      <p className="text-gray-400">Automate your business processes and tasks</p>
+                      <h2 className="text-3xl font-bold mb-2">Workflows</h2>
+                      <p className="text-gray-400">Automate your deduction recovery processes</p>
                     </div>
                     <Button className="bg-purple-600 hover:bg-purple-700">
                       <Plus className="h-4 w-4 mr-2" />
@@ -220,8 +197,4 @@ export default function WorkflowsPage() {
       </IntegrationProvider>
     </TooltipProvider>
   )
-}
-}
-    </div>
-  );
 }

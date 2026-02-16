@@ -1,26 +1,3 @@
-import { useState, useEffect } from 'react';
-import Spinner from '@/components/ui/spinner'; // or your existing spinner component
-
-export default function Page() {
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    setTimeout(() => setLoading(false), 500); // quick simulated loading
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="fixed inset-0 bg-white flex items-center justify-center z-50">
-        <Spinner />
-      </div>
-    );
-  }
-
-  return (
-    <div>
-      {/* existing page content here */
-
-
 "use client"
 
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
@@ -95,7 +72,7 @@ export default function DisputesPage() {
             <SidebarInset className="flex-1">
               <div className="p-6">
                 <div className="mb-8">
-                  <h1 className="text-3xl font-bold mb-2">Disputes Management</h1>
+                  <h2 className="text-3xl font-bold mb-2">Disputes Management</h2>
                   <p className="text-gray-400">Track and manage all dispute cases</p>
                 </div>
 
@@ -212,9 +189,4 @@ export default function DisputesPage() {
       </IntegrationProvider>
     </TooltipProvider>
   )
-}
-
-}
-    </div>
-  );
 }
