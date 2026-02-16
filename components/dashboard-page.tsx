@@ -141,7 +141,7 @@ export function DashboardPage() {
               <CardDescription>Recovered Revenue vs. Pending Deductions</CardDescription>
             </CardHeader>
             <CardContent>
-              <ChartContainer config={{}} className="h-[300px] w-full">
+              <ChartContainer config={{ recovered: { label: "Recovered", color: "#34d399" }, pending: { label: "Pending", color: "#facc15" } }} className="h-[300px] w-full">
                 <ResponsiveContainer>
                   <LineChart data={chartData}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" />
