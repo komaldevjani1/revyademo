@@ -149,6 +149,14 @@ const disputeActivity = [
   },
 ]
 
+const integrationStatus = [
+  { name: "Gmail", status: "connected", lastSync: "2 min ago" },
+  { name: "NetSuite", status: "connected", lastSync: "5 min ago" },
+  { name: "Google Sheets", status: "connected", lastSync: "1 min ago" },
+  { name: "SAP ERP", status: "synced", lastSync: "15 min ago" },
+  { name: "PDF Parser", status: "connected", lastSync: "30 sec ago" },
+]
+
 export function RevenueDashboard() {
   const [selectedDeduction, setSelectedDeduction] = useState<any>(null)
 
@@ -217,7 +225,7 @@ export function RevenueDashboard() {
             />
             <MetricCard
               title="Disputes in Progress"
-              value="23"
+              value="14"
               change="+3"
               changeType="increase"
               description="Active cases"
@@ -226,7 +234,7 @@ export function RevenueDashboard() {
             />
             <MetricCard
               title="Revenue Leakage Prevented"
-              value="94.3%"
+              value="84.3%"
               change="+2.1%"
               changeType="increase"
               description="Success rate"
@@ -512,6 +520,38 @@ export function RevenueDashboard() {
                     ))}
                   </TableBody>
                 </Table>
+              </CardContent>
+            </Card>
+
+            {/* Data Ingestion Status */}
+            <Card className="bg-gray-900 border-gray-800">
+              <CardHeader>
+                <CardTitle>Data Ingestion Status</CardTitle>
+                <CardDescription>Real-time source health</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {integrationStatus.map((integration) => (
+                  <div key={integration.name} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <StatusIndicator status={integration.status} />
+                      <span className="font-medium">{integration.name}</span>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xs text-gray-400">{integration.lastSync}</div>
+                      <div className="text-xs font-medium text-green-400">
+                        {integration.status === "connected" ? "Live" : "Synced"}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                <div className="pt-2 border-t border-gray-800">
+                  <div className="text-xs text-gray-400">
+                    <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                      <span>All systems operational</span>
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>

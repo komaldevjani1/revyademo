@@ -15,158 +15,88 @@ interface DeductionDetailModalProps {
 export function DeductionDetailModal({ isOpen, onOpenChange, deduction }: DeductionDetailModalProps) {
   if (!deduction) return null
 
- const getDeductionDetails = () => {
-
-  // 1️⃣ Target — Shortage — Big Amount
-  if (deduction.id === "806803842") {
-    return {
-      customer: "Target",
-      invoice: "CB-806803842",
-      reasonCode: "Shortage",
-      reason:
-        "Shortage quantities applied on the chargeback are incorrect across all item numbers. The total shortage charge applied was $20,947.16. After recalculating the shortage using the packing list quantities and extended unit costs across all item numbers, the verified extended cost of the actual shortage totals $14,020.62. As a result, the chargeback exceeds the supported shortage amount by $6,926.54. We are requesting repayment of the unsupported difference. Please see Dispute Detail to find full list of items incorrectly shortage",
-      documents: [
-        { name: "Original Invoice", type: "PDF", status: "available", color: "blue" },
-        { name: "Proof of Delivery", type: "PDF", status: "missing", color: "red" },
-        { name: "Backup", type: "PDF", status: "available", color: "green" },
-        { name: "Packing List", type: "PDF", status: "available", color: "green" },
-        { name: "Dispute Detail", type: "CSV", status: "available", color: "green" },
-      ],
-      communications: [
-        {
-          type: "received",
-          subject: "POD for PO 5503279 | Shortage Dispute",
-          time: "2 days ago",
-          content:
-            "Please send POD for PO 5503279. Target reported $20,947.16 in shortage for PO 5503279, from the packing list we estimated the true shortage cost as as $14,020.62. To dispute the remaining $6,926.54, we need the POD. Thank you",
-        },
-        {
-          type: "sent",
-          subject: "RE: POD for PO 5503279 | Shortage Dispute",
-          time: "1 day ago",
-          content: "Requesting POD for POD for PO 5503279 to dispute $6,926.54.",
-        },
-      ],
-      nextSteps: "Dispute with signed POD evidence showing case count discrepancy.",
-    }
-
-  // 2️⃣ Target — Shortage — Smaller Amount
-  } else if (deduction.id === "806224215") {
-    return {
-      customer: "Target",
-      invoice: "806224215",
-      reasonCode: "Shortage",
-      reason:
-        "Based on the Proof of Delivery (POD), this shipment was received and signed for in full, with no exceptions or shortages noted at delivery. All products listed on the invoice were confirmed as delivered at the time of receipt. As there is no documented discrepancy on the POD, the reported shortage is not supported by delivery records and appears to be applied in error.",
-      documents: [
-        { name: "Original Invoice", type: "PDF", status: "available", color: "blue" },
-        { name: "Proof of Delivery", type: "PDF", status: "available", color: "green" },
-        { name: "Packing Slip", type: "PDF", status: "available", color: "green" },
-      ],
-      communications: [
-        {
-          type: "received",
-          subject: "806224215 | Shortage",
-          time: "5 days ago",
-          content:
-            "Per the Proof of Delivery (POD), this shipment was received and signed for in full, with no exceptions or shortages noted at delivery. All products listed on the invoice were confirmed as delivered at the time of receipt. As there is no documented discrepancy on the POD, the shortage chargeback appears to have been applied in error. Supporting documentation is attached for review.",
-        },
-        {
-          type: "sent",
-          subject: "RE: 806224215 | Shortage",
-          time: "2 days ago",
-          content:
-            "Hi Team - bumping the deduction dispute. Per the Proof of Delivery (POD), this shipment was received and signed for in full, with no exceptions or shortages noted at delivery. All products listed on the invoice were confirmed as delivered at the time of receipt. As there is no documented discrepancy on the POD, the shortage chargeback appears to have been applied in error. Supporting documentation is attached for review.",
-        },
-      ],
-      nextSteps: "Follow up until response.",
-    }
-
-  // 3️⃣ RNDC — mcb
-  } else if (deduction.id === "794846216") {
-    return {
-      customer: "RNDC",
-      invoice: "CB-794846216",
-      reasonCode: "MCB",
-      reason:
-        "Based on the available records, the MCB appears valid. Promo calendar states a 20% MCB from March 1 - March 15th 2025 which aligns with the total deducted.",
-      documents: [
-        { name: "Original Invoice", type: "PDF", status: "available", color: "blue" },
-        { name: "Purchase Order (PO)", type: "PDF", status: "available", color: "green" },
-        { name: "Promo Calendar", type: "PDF", status: "available", color: "green" },
-        { name: "Promotion Contract", type: "CSV", status: "available", color: "green" },
-        { name: "Deduction Notice", type: "PDF", status: "available", color: "yellow" },
-      ],
-      communications: [
-        {
-          type: "",
-          subject: "",
-          time: "",
-          content:
-            "",
-        },
-        {
-          type: "",
-          subject: "",
-          time: "o",
-          content:
-            "",
-        },
-      ],
-      nextSteps: "",
-    }
-
-  // 4️⃣ RNDC - New Item Listing Fee
-  } else if (deduction.id === "3377973") {
-    return {
-      customer: "Southern Glazer Wine & Spirits",
-      invoice: "CB-3377973",
-      reasonCode: "New Item Listing Fee",
-      reason:
-        "New Item Listing Fee appears to be charged twice for the same DC and SKU",
-      documents: [
-        { name: "Deduction Notice", type: "PDF", status: "available", color: "yellow" },
-        { name: "Contract", type: "PDF", status: "missing", color: "red" },
-        { name: "Purchase Order (PO)", type: "PDF", status: "missing", color: "red" },
-      ],
-      communications: [
-        {
-          type: "sent",
-          subject: "3377973 | Potential Duplicate",
-          time: "1 day ago",
-          content:
-            "It appears that we have been charged a listing fee twiced for the same DC and SKU, can you confirm if this is a dupe or something else?",
-        },
-      ],
-      nextSteps: "Await documentation to determine dispute validity.",
-    }
-
-  // 5️⃣ Rebates
-  } else if (deduction.id === "1000189844") {
-    return {
-      customer: "Southern Glazer Wine & Spirits",
-      invoice: "CB-1000189844",
-      reasonCode: "Rebate",
-      reason:
-        "Based on deduction value for this PO, distributor was supposed to cover 50% of Rebate, but 0% was covered",
-      documents: [
-        { name: "Original Invoice", type: "PDF", status: "available", color: "blue" },
-        { name: "Deduction", type: "PDF", status: "available", color: "green" },
-        { name: "Purchase Order (PO)", type: "PDF", status: "available", color: "green" },
-      ],
-      communications: [
-        {
-          type: "sent",
-          subject: "1000189844 | Rebate Coverage Dispute",
-          time: "3 days ago",
-          content:
-            "According to our agreement, we're supposed to cover 50% of the Rebate but according to this PO, it looks like we covered all of it. Can we get a repayment for the 50%?",
-        },
-      ],
-      nextSteps: "Await response from distributor.",
+  // Sample data based on deduction status
+  const getDeductionDetails = () => {
+    if (deduction.status === "Needs Review") {
+      return {
+        customer: "Target Corporation",
+        invoice: "INV-2024-8903",
+        reason:
+          "Bill back promotional allowance claimed without valid authorization. No matching promotional agreement found in our records.",
+        documents: [
+          { name: "Original Invoice", type: "PDF", status: "available", color: "blue" },
+          { name: "Promotional Agreement", type: "PDF", status: "missing", color: "red" },
+          { name: "Deduction Notice", type: "PDF", status: "available", color: "yellow" },
+        ],
+        communications: [
+          {
+            type: "received",
+            subject: "Promotional Deduction Claim",
+            time: "3 days ago",
+            content:
+              "Target is claiming $4,200.75 promotional allowance for Q4 campaign. Requesting documentation to verify authorization.",
+          },
+        ],
+        nextSteps: "Request promotional agreement documentation from Target to verify claim validity.",
+      }
+    } else if (deduction.status === "Disputable") {
+      return {
+        customer: "UNFI",
+        invoice: "INV-2024-8901",
+        reason:
+          "Spoilage claim appears inflated. Customer reported 50 cases spoiled, but delivery receipt shows only 45 cases total delivered.",
+        documents: [
+          { name: "Original Invoice", type: "PDF", status: "available", color: "blue" },
+          { name: "Delivery Receipt", type: "PDF", status: "available", color: "green" },
+          { name: "Spoilage Report", type: "PDF", status: "available", color: "yellow" },
+          { name: "Photo Evidence", type: "JPG", status: "available", color: "green" },
+        ],
+        communications: [
+          {
+            type: "received",
+            subject: "Spoilage Claim - 50 Cases",
+            time: "2 days ago",
+            content: "UNFI reporting spoilage of 50 cases due to temperature control failure during transport.",
+          },
+          {
+            type: "sent",
+            subject: "RE: Spoilage Claim - Documentation Request",
+            time: "1 day ago",
+            content: "Requesting delivery receipt verification. Our records show only 45 cases delivered total.",
+          },
+        ],
+        nextSteps: "Dispute with delivery receipt evidence showing case count discrepancy.",
+      }
+    } else {
+      return {
+        customer: "KeHE Distributors",
+        invoice: "INV-2024-8902",
+        reason: "Verified freight damage claim with proper documentation and photo evidence.",
+        documents: [
+          { name: "Original Invoice", type: "PDF", status: "available", color: "blue" },
+          { name: "Damage Report", type: "PDF", status: "available", color: "green" },
+          { name: "Carrier Receipt", type: "PDF", status: "available", color: "green" },
+          { name: "Damage Photos", type: "JPG", status: "available", color: "green" },
+        ],
+        communications: [
+          {
+            type: "received",
+            subject: "Freight Damage Claim",
+            time: "5 days ago",
+            content:
+              "KeHE reporting freight damage to 12 cases during shipment. Damage photos and carrier report attached.",
+          },
+          {
+            type: "sent",
+            subject: "RE: Freight Damage Claim - Approved",
+            time: "4 days ago",
+            content: "Claim approved based on carrier damage report and photographic evidence. Processing credit.",
+          },
+        ],
+        nextSteps: "Claim approved and processed.",
+      }
     }
   }
-}
 
   const details = getDeductionDetails()
 
@@ -220,7 +150,7 @@ export function DeductionDetailModal({ isOpen, onOpenChange, deduction }: Deduct
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400">Reason Code:</span>
-                    <span className="font-mono">{details.reasonCode}</span>
+                    <span className="font-mono">{deduction.reasonCode}</span>
                   </div>
                 </div>
 

@@ -131,7 +131,7 @@ export function DeductionDrawer({ isOpen, onClose, deduction }: DeductionDrawerP
             type: "sent",
             subject: "RE: Freight Damage Claim - Approved",
             time: "6 days ago",
-            from: "finance@yourcompany.com",
+            from: "finance@gorevya.com",
             content: "Claim approved based on carrier damage report and photographic evidence. Processing credit memo.",
           },
         ],

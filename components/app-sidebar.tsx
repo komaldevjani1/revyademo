@@ -23,7 +23,6 @@ import {
   BarChart3,
   TrendingUp,
   GitBranch,
-  Target,
 } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
@@ -32,7 +31,6 @@ const menuItems = [
   { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { title: "Deductions", href: "/deductions", icon: FileText },
   { title: "Disputes", href: "/disputes", icon: ShieldCheck },
-  { title: "Plan vs Actual", href: "/plan-vs-actual", icon: Target },
   { title: "Reports", href: "/reports", icon: BarChart3 },
   { title: "Analytics", href: "/analytics", icon: TrendingUp },
   { title: "Integrations", href: "/integrations", icon: Plug },

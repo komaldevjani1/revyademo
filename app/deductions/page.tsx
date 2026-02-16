@@ -1,3 +1,54 @@
+import { useState, useEffect } from 'react';
+import Spinner from '@/components/ui/spinner'; // or your existing spinner component
+
+export default function Page() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => setLoading(false), 500); // quick simulated loading
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="fixed inset-0 bg-white flex items-center justify-center z-50">
+        <Spinner />
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      {/* existing page content here */
+
+
+
+
+
+import { useState, useEffect } from 'react';
+import Spinner from '@/components/ui/spinner'; // or your existing spinner component
+
+export default function Page() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => setLoading(false), 500); // quick simulated loading
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="fixed inset-0 bg-white flex items-center justify-center z-50">
+        <Spinner />
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      {/* existing page content here */}
+    </div>
+  );
+}
+
 "use client"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
@@ -32,3 +83,7 @@ export default function DeductionsPage() {
     </TooltipProvider>
   )
 }
+}
+    </div>
+  );
+  }
