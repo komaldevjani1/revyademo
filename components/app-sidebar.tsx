@@ -24,6 +24,7 @@ import {
   CalendarRange,
 } from "lucide-react"
 import { usePathname } from "next/navigation"
+import Link from "next/link"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 const menuItems = [
@@ -60,10 +61,10 @@ export function AppSidebar() {
                       isActive={isActive}
                       className="w-full justify-start px-3 py-2.5 text-sm font-medium"
                     >
-                      <a href={item.href} className="flex items-center gap-3">
+                      <Link href={item.href} className="flex items-center gap-3">
                         <item.icon className="h-5 w-5 flex-shrink-0" />
                         <span>{item.title}</span>
-                      </a>
+                      </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 )

@@ -1,20 +1,19 @@
 "use client"
 
+import { IntegrationProvider } from "@/context/integration-context"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
-import { RevyaDashboard } from "@/components/revya-dashboard"
-import { IntegrationProvider } from "@/context/integration-context"
 import { TooltipProvider } from "@/components/ui/tooltip"
 
-export default function DashboardPage() {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <TooltipProvider>
       <IntegrationProvider>
         <SidebarProvider>
           <div className="flex min-h-screen w-full bg-gray-950 text-gray-50">
             <AppSidebar />
-            <SidebarInset className="flex-1">
-              <RevyaDashboard />
+            <SidebarInset className="flex-1 bg-gray-950">
+              {children}
             </SidebarInset>
           </div>
         </SidebarProvider>
