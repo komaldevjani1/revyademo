@@ -15,27 +15,24 @@ import {
   LayoutDashboard,
   FileText,
   ShieldCheck,
-  Plug,
   Settings,
   LifeBuoy,
   UserCircle,
   ChevronUp,
-  BarChart3,
   TrendingUp,
   GitBranch,
-  Target,
+  CalendarRange,
 } from "lucide-react"
 import { usePathname } from "next/navigation"
+import Link from "next/link"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 const menuItems = [
   { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { title: "Deductions", href: "/deductions", icon: FileText },
   { title: "Disputes", href: "/disputes", icon: ShieldCheck },
-  { title: "Plan vs Actual", href: "/plan-vs-actual", icon: Target },
-  { title: "Reports", href: "/reports", icon: BarChart3 },
+  { title: "Promo Calendar", href: "/promo-calendar", icon: CalendarRange },
   { title: "Analytics", href: "/analytics", icon: TrendingUp },
-  { title: "Integrations", href: "/integrations", icon: Plug },
   { title: "Workflows", href: "/workflows", icon: GitBranch },
   { title: "Settings", href: "/settings", icon: Settings },
 ]
@@ -55,20 +52,23 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu className="space-y-1">
-              {menuItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={pathname === item.href}
-                    className="w-full justify-start px-3 py-2.5 text-sm font-medium"
-                  >
-                    <a href={item.href} className="flex items-center gap-3">
-                      <item.icon className="h-5 w-5 flex-shrink-0" />
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {menuItems.map((item) => {
+                const isActive = pathname === item.href || (item.href === "/dashboard" && pathname === "/")
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={isActive}
+                      className="w-full justify-start px-3 py-2.5 text-sm font-medium"
+                    >
+                      <Link href={item.href} className="flex items-center gap-3">
+                        <item.icon className="h-5 w-5 flex-shrink-0" />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

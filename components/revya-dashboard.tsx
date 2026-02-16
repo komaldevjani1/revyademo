@@ -24,6 +24,7 @@ import {
   Filter,
   Eye,
   AlertCircle,
+  Plug,
 } from "lucide-react"
 import { DeductionDrawer } from "./deduction-drawer"
 import { AccountingModal } from "./accounting-modal"
@@ -251,7 +252,7 @@ export function RevyaDashboard() {
             <div className="grid gap-6 md:grid-cols-3">
               <MetricCard
                 title="Revenue Recovered"
-                value="$2.34M"
+                value="$1.3M"
                 change="+24.8%"
                 changeType="increase"
                 description="Last 12 months"
@@ -469,91 +470,151 @@ export function RevyaDashboard() {
               </CardContent>
             </Card>
 
-            {/* Recent Dispute Activity Feed */}
+            {/* Data Ingestion Health */}
             <Card className="bg-gray-900 border-gray-800">
               <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="flex items-center gap-2 font-semibold">
-                      Recent Dispute Activity
-                      <Badge variant="outline" className="border-green-600 text-green-400 bg-green-400/10 font-medium">
-                        Live
-                      </Badge>
-                    </CardTitle>
-                    <CardDescription className="font-normal">
-                      Real-time updates from active dispute cases
-                    </CardDescription>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Select value={activityFilter} onValueChange={setActivityFilter}>
-                      <SelectTrigger className="w-32 bg-gray-800 border-gray-700">
-                        <SelectValue placeholder="Filter by..." />
-                      </SelectTrigger>
-                      <SelectContent className="bg-gray-800 border-gray-700">
-                        <SelectItem value="all">All Distributors</SelectItem>
-                        <SelectItem value="unfi">UNFI</SelectItem>
-                        <SelectItem value="target">Target</SelectItem>
-                        <SelectItem value="sprouts">Sprouts</SelectItem>
-                        <SelectItem value="kehe">KeHE</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="border-gray-600 bg-transparent font-medium"
-                      onClick={handleActivityReport}
-                    >
-                      <Download className="h-4 w-4 mr-1" />
-                      Activity Report
-                    </Button>
-                  </div>
-                </div>
+                <CardTitle className="flex items-center gap-2 font-semibold">
+                  Data Ingestion Health
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Info className="h-4 w-4 text-gray-400" />
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-gray-800 border-gray-700 max-w-xs">
+                      <p className="text-sm">
+                        Real-time monitoring of all data sources feeding the deduction recovery system.
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </CardTitle>
+                <CardDescription className="font-normal">Live source monitoring</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {filteredActivity.map((activity, index) => (
-                    <div
-                      key={index}
-                      className={`p-4 rounded-lg cursor-pointer transition-all hover:bg-gray-800/50 border-l-4 ${
-                        activity.type === "success"
-                          ? "border-l-green-400 bg-green-400/5"
-                          : activity.type === "pending"
-                            ? "border-l-yellow-400 bg-yellow-400/5"
-                            : activity.type === "dispute"
-                              ? "border-l-red-400 bg-red-400/5"
-                              : "border-l-orange-400 bg-orange-400/5"
-                      } border border-gray-800/50`}
-                    >
-                      <div className="flex items-start gap-4">
-                        <div className="flex-shrink-0 mt-1">
-                          {activity.type === "success" && <CheckCircle2 className="h-5 w-5 text-green-400" />}
-                          {activity.type === "pending" && <AlertTriangle className="h-5 w-5 text-yellow-400" />}
-                          {activity.type === "dispute" && <XCircle className="h-5 w-5 text-red-400" />}
-                          {activity.type === "escalation" && <AlertCircle className="h-5 w-5 text-orange-400" />}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium leading-tight mb-3">{activity.update}</p>
-                          <div className="flex items-center gap-4 text-sm">
-                            <span className="text-gray-400">{activity.id}</span>
-                            <span className="font-medium text-green-400">${activity.amount.toLocaleString()}</span>
-                            <span className="text-gray-400">{activity.time}</span>
-                            <Badge variant="outline" className="border-gray-600 text-xs">
-                              {activity.distributor}
-                            </Badge>
-                          </div>
-                        </div>
-                        <div className="flex-shrink-0">
-                          <Button size="sm" variant="ghost">
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                        </div>
+              <CardContent className="space-y-4">
+                {integrationStatus.map((integration) => (
+                  <div key={integration.name} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <StatusIndicator status={integration.status} health={integration.health} />
+                      <span className="font-medium text-sm">{integration.name}</span>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xs text-gray-400">{integration.lastSync}</div>
+                      <div
+                        className={`text-xs font-medium ${
+                          integration.health === "excellent"
+                            ? "text-green-400"
+                            : integration.health === "good"
+                              ? "text-yellow-400"
+                              : "text-red-400"
+                        }`}
+                      >
+                        {integration.status === "connected" ? "Live" : "Synced"}
                       </div>
                     </div>
-                  ))}
+                  </div>
+                ))}
+                <div className="pt-4 border-t border-gray-800">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="w-full border-blue-500 text-blue-400 hover:bg-blue-500/10 hover:text-blue-300 bg-transparent font-medium"
+                    onClick={() => alert("Opening data source connection wizard...")}
+                  >
+                    <Plug className="h-4 w-4 mr-2" />
+                    Add Integration
+                  </Button>
+                </div>
+                <div className="pt-3 border-t border-gray-800">
+                  <div className="flex items-center gap-2 text-xs">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <span className="text-green-400 font-medium">All systems operational</span>
+                  </div>
+                  <div className="text-xs text-gray-400 mt-1">Last full sync: 2 min ago</div>
                 </div>
               </CardContent>
             </Card>
           </div>
+
+          {/* Recent Dispute Activity Feed */}
+          <Card className="bg-gray-900 border-gray-800">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2 font-semibold">
+                    Recent Dispute Activity
+                    <Badge variant="outline" className="border-green-600 text-green-400 bg-green-400/10 font-medium">
+                      Live
+                    </Badge>
+                  </CardTitle>
+                  <CardDescription className="font-normal">Real-time updates from active dispute cases</CardDescription>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Select value={activityFilter} onValueChange={setActivityFilter}>
+                    <SelectTrigger className="w-32 bg-gray-800 border-gray-700">
+                      <SelectValue placeholder="Filter by..." />
+                    </SelectTrigger>
+                    <SelectContent className="bg-gray-800 border-gray-700">
+                      <SelectItem value="all">All Distributors</SelectItem>
+                      <SelectItem value="unfi">UNFI</SelectItem>
+                      <SelectItem value="target">Target</SelectItem>
+                      <SelectItem value="sprouts">Sprouts</SelectItem>
+                      <SelectItem value="kehe">KeHE</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="border-gray-600 bg-transparent font-medium"
+                    onClick={handleActivityReport}
+                  >
+                    <Download className="h-4 w-4 mr-1" />
+                    Activity Report
+                  </Button>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {filteredActivity.map((activity, index) => (
+                  <div
+                    key={index}
+                    className={`p-4 rounded-lg cursor-pointer transition-all hover:bg-gray-800/50 border-l-4 ${
+                      activity.type === "success"
+                        ? "border-l-green-400 bg-green-400/5"
+                        : activity.type === "pending"
+                          ? "border-l-yellow-400 bg-yellow-400/5"
+                          : activity.type === "dispute"
+                            ? "border-l-red-400 bg-red-400/5"
+                            : "border-l-orange-400 bg-orange-400/5"
+                    } border border-gray-800/50`}
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0 mt-1">
+                        {activity.type === "success" && <CheckCircle2 className="h-5 w-5 text-green-400" />}
+                        {activity.type === "pending" && <AlertTriangle className="h-5 w-5 text-yellow-400" />}
+                        {activity.type === "dispute" && <XCircle className="h-5 w-5 text-red-400" />}
+                        {activity.type === "escalation" && <AlertCircle className="h-5 w-5 text-orange-400" />}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium leading-tight mb-3">{activity.update}</p>
+                        <div className="flex items-center gap-4 text-sm">
+                          <span className="text-gray-400">{activity.id}</span>
+                          <span className="font-medium text-green-400">${activity.amount.toLocaleString()}</span>
+                          <span className="text-gray-400">{activity.time}</span>
+                          <Badge variant="outline" className="border-gray-600 text-xs">
+                            {activity.distributor}
+                          </Badge>
+                        </div>
+                      </div>
+                      <div className="flex-shrink-0">
+                        <Button size="sm" variant="ghost">
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         </main>
 
         {/* Modals and Drawers */}
@@ -642,6 +703,16 @@ function StatusBadge({ status }: { status: string }) {
       {status}
     </Badge>
   )
+}
+
+function StatusIndicator({ status, health }: { status: string; health: string }) {
+  const getColor = () => {
+    if (health === "excellent") return "bg-green-400"
+    if (health === "good") return "bg-yellow-400"
+    return "bg-red-400"
+  }
+
+  return <div className={`w-2 h-2 rounded-full ${getColor()} ${status === "connected" ? "animate-pulse" : ""}`} />
 }
 
 // Ensure both named and default exports are available
